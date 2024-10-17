@@ -5,21 +5,22 @@ import br.com.pinalli.model.Pagamento;
 import br.com.pinalli.model.StatusPagamento;
 import br.com.pinalli.repository.PagamentoRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.modelmapper.ModelMapper;
+
 
 @Service
 public class PagamentoService {
 
+    private final ModelMapper modelMapper;
     private final PagamentoRepository pagamentoRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    public PagamentoService(PagamentoRepository pagamentoRepository) {
+    public PagamentoService(ModelMapper modelMapper, PagamentoRepository pagamentoRepository) {
+        this.modelMapper = modelMapper;
         this.pagamentoRepository = pagamentoRepository;
     }
 
@@ -30,7 +31,8 @@ public class PagamentoService {
     }
 
     public PagamentoDTO obterPorId(Long id) {
-        Pagamento pagamento = pagamentoRepository.findById(id)
+        Pagamento pagamento = pagamentoRepository
+                .findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 
         return modelMapper.map(pagamento, PagamentoDTO.class);
