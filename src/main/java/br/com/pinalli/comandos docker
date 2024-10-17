@@ -1,0 +1,31 @@
+
+#build
+docker-compose up --build
+
+
+
+#remove
+docker system prune -a --volumes (comando base que inicia o processo de limpeza.
+                                  -a: Este flag adiciona um "coringa", indicando que você quer remover todos os componentes não utilizados, sem exceções.
+                                  --volumes: Esta flag específica que você também deseja remover os volumes não utilizados. Volumes são diretórios persistentes que podem ser montados em containers.
+
+docker system prune -a --volumes (Limpe qualquer container ou volume residual)
+docker-compose down -v
+docker volume rm pratourbano_mysql_data
+
+#complet claen
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+docker volume prune
+
+
+#backup database
+docker exec pratourbano-mysql mysqldump -u root -proot pratourbano-pagamento > backup.sql
+#import
+docker exec -i pratourbano-mysql mysql -u root -proot pratourbano-pagamento < backup.sql
+
+
+
+#mvn clean
+mvn clean
+mvn dependency:purge-local-repository

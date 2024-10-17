@@ -3,16 +3,18 @@ package br.com.pinalli.controller;
 
 import br.com.pinalli.dto.PagamentoDTO;
 import br.com.pinalli.service.PagamentoService;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.data.domain.Page;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.awt.print.Pageable;
 import java.net.URI;
 
 @RestController
@@ -35,9 +37,10 @@ public class PagamentoController {
     }
 
     @GetMapping
-    public Page<PagamentoDTO> list(@PageableDefault(size = 10) Pageable paginacao) {
-        return pagamentoService.obterTodos((org.springframework.data.domain.Pageable) paginacao);
+    public Page<PagamentoDTO> list(@PageableDefault() Pageable paginacao) {
+        return pagamentoService.obterTodos(paginacao);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<PagamentoDTO> details(@PathVariable @NotNull Long id) {

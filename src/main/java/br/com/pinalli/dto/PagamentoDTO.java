@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @Setter
 public class PagamentoDTO {
 
+    @Getter
     private Long id;
     private BigDecimal valor;
     private String nome;
