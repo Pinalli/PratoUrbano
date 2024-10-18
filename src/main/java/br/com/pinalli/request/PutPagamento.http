@@ -1,0 +1,14 @@
+PUT http://localhost:8080/pagamentos/2
+Content-Type: application/json
+
+{
+  "valor": 100,
+  "nome": "Rodrigo",
+  "numero": "12345678",
+  "expiracao": "10/29",
+  "codigo": "123",
+  "pedidoId": 1,
+  "formaDePagamentoId": 1,
+  "status": "CRIADO"
+}
+

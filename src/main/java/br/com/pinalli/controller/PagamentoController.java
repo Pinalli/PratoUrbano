@@ -36,6 +36,14 @@ public class PagamentoController {
         return ResponseEntity.created(endereco).body(pagamento);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<PagamentoDTO> uodate(@PathVariable @NotNull Long id, @RequestBody @Valid PagamentoDTO pagamentoDTO) {
+        System.out.println("ID recebido: " + id);
+        PagamentoDTO atualizado = pagamentoService.atualizarPagamento(id, pagamentoDTO);
+        System.out.println("Pagamento DTO recebido: " + pagamentoDTO);
+        return ResponseEntity.ok(atualizado);
+    }
+
     @GetMapping
     public Page<PagamentoDTO> list(@PageableDefault() Pageable paginacao) {
         return pagamentoService.obterTodos(paginacao);
@@ -48,11 +56,6 @@ public class PagamentoController {
         return ResponseEntity.ok(dto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<PagamentoDTO> uodate(@PathVariable @NotNull Long id, @RequestBody @Valid PagamentoDTO pagamentoDTO) {
-        PagamentoDTO atualizado = pagamentoService.atualizarPagamento(id, pagamentoDTO);
-        return ResponseEntity.ok(atualizado);
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<PagamentoDTO> delete(@PathVariable @NotNull Long id) {

@@ -2,7 +2,6 @@ package br.com.pinalli.service;
 
 import br.com.pinalli.dto.PagamentoDTO;
 import br.com.pinalli.model.Pagamento;
-import br.com.pinalli.model.StatusPagamento;
 import br.com.pinalli.repository.PagamentoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +23,14 @@ public class PagamentoService {
         this.pagamentoRepository = pagamentoRepository;
     }
 
+    public PagamentoDTO criarPagamento(PagamentoDTO dto) {
+        Pagamento pagamento = modelMapper.map(dto, Pagamento.class);
+        pagamento.setStatus(PagamentoDTO.StatusPagamento.CRIADO);
+        pagamentoRepository.save(pagamento);
+
+        return modelMapper.map(pagamento, PagamentoDTO.class);
+    }
+
     public Page<PagamentoDTO> obterTodos(Pageable paginacao) {
         return pagamentoRepository
                 .findAll(paginacao)
@@ -38,22 +45,17 @@ public class PagamentoService {
         return modelMapper.map(pagamento, PagamentoDTO.class);
     }
 
-    public PagamentoDTO criarPagamento(PagamentoDTO dto) {
-        Pagamento pagamento = modelMapper.map(dto, Pagamento.class);
-        pagamento.setStatus(StatusPagamento.CRIADO);
-        pagamentoRepository.save(pagamento);
-
-        return modelMapper.map(pagamento, PagamentoDTO.class);
-    }
-
     public PagamentoDTO atualizarPagamento(Long id, PagamentoDTO dto) {
-        Pagamento pagamento = modelMapper.map(dto, Pagamento.class);
-        pagamento.setId(id);
+        Pagamento pagamento = pagamentoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pagamento não encontrado"));
+        modelMapper.map(dto, pagamento);
         pagamento = pagamentoRepository.save(pagamento);
+
         return modelMapper.map(pagamento, PagamentoDTO.class);
     }
 
-    public void excluirPagamento(Long id) {
-        pagamentoRepository.deleteById(id);
-    }
+
+public void excluirPagamento(Long id) {
+    pagamentoRepository.deleteById(id);
+}
 }

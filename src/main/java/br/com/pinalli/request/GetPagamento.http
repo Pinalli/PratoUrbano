@@ -1,3 +1,2 @@
 
-GET  http://localhost:8080/pagamentos
-
+GET  http://localhost:8080/pagamentos/3

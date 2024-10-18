@@ -1,8 +1,7 @@
 package br.com.pinalli.model;
 
+import br.com.pinalli.dto.PagamentoDTO;
 import jakarta.persistence.*;
-import jakarta.transaction.Status;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -42,12 +41,11 @@ public class Pagamento {
     private String expiracao;
 
     @NotBlank
-    @Size(min =3 ,max = 19)
+    @Size(min = 3, max = 19)
     private String codigo;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    private StatusPagamento status;
+    private PagamentoDTO.StatusPagamento status;
 
     @NotNull
     private Long pedidoId;
