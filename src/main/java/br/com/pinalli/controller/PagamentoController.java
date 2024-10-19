@@ -37,10 +37,11 @@ public class PagamentoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PagamentoDTO> uodate(@PathVariable @NotNull Long id, @RequestBody @Valid PagamentoDTO pagamentoDTO) {
-        System.out.println("ID recebido: " + id);
+    public ResponseEntity<PagamentoDTO> update(@PathVariable @NotNull Long id, @RequestBody @Valid PagamentoDTO pagamentoDTO) {
+        if (pagamentoDTO.getId() != null && !pagamentoDTO.getId().equals(id)) {
+            return ResponseEntity.badRequest().build();
+        }
         PagamentoDTO atualizado = pagamentoService.atualizarPagamento(id, pagamentoDTO);
-        System.out.println("Pagamento DTO recebido: " + pagamentoDTO);
         return ResponseEntity.ok(atualizado);
     }
 

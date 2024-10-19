@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 //necessario para o crud
 @Repository
 public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
+
 }

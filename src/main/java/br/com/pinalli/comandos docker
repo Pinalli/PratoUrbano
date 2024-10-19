@@ -1,10 +1,16 @@
 
-#build
+- build
 docker-compose up --build
 
+-Verifique os volumes usando o Docker CLI:
+docker inspect pratourbano-mysql
 
+-Limpar o log do InnoDB (caso os dados não sejam críticos):
+docker-compose down
+rm -rf /caminho/do/seu/mysql-data
+docker-compose up
 
-#remove
+- remove:
 docker system prune -a --volumes (comando base que inicia o processo de limpeza.
                                   -a: Este flag adiciona um "coringa", indicando que você quer remover todos os componentes não utilizados, sem exceções.
                                   --volumes: Esta flag específica que você também deseja remover os volumes não utilizados. Volumes são diretórios persistentes que podem ser montados em containers.
@@ -13,19 +19,27 @@ docker system prune -a --volumes (Limpe qualquer container ou volume residual)
 docker-compose down -v
 docker volume rm pratourbano_mysql_data
 
-#complet claen
+- Verifique se foi usado o volume do Docker:
+docker volume ls
+docker volume rm nome_do_volume
+
+
+- complet Clean:
 docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 docker volume prune
 
 
-#backup database
+- backup database
 docker exec pratourbano-mysql mysqldump -u root -proot pratourbano-pagamento > backup.sql
 #import
 docker exec -i pratourbano-mysql mysql -u root -proot pratourbano-pagamento < backup.sql
 
 
-
-#mvn clean
+===============MAVEN==============
+- mvn clean
 mvn clean
 mvn dependency:purge-local-repository
+
+- Forçar a atualização do repositório Maven:
+mvn clean install -U
