@@ -5,8 +5,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: pratourbano-pagamento
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+    networks:
+      - pratourbano-net  # Nome simplificado
     ports:
       - "3306:3306"
     command:
@@ -17,45 +17,41 @@ services:
       - mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 5
-
-  eureka-server:
-    build:
-      context: C:/Users/betop/IdeaProjects/eureka-server
-      dockerfile: Dockerfile
-    container_name: eureka-server
-    ports:
-      - "8761:8081"
-    environment:
-      - SPRING_APPLICATION_NAME=eureka-server
-    healthcheck:
-      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8081  || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 40s
+      retries: 10
+      start_period: 30s
 
   app:
-    build:
-      context: C:/Users/betop/IdeaProjects/PratoUrbano
-      dockerfile: Dockerfile
+    build: .
     container_name: pratourbano-app
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/pratourbano-pagamento?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://host.docker.internal:8761/eureka/
+      EUREKA_INSTANCE_PREFERIPADDRESS: "true"
+    networks:
+      - pratourbano-net  # Nome simplificado
     depends_on:
       mysql:
         condition: service_healthy
-      eureka-server:
-        condition: service_healthy
     ports:
       - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
 
+networks:
+  pratourbano-net:  # Nome simplificado
+    driver: bridge
 volumes:
   mysql_data:
     name: pratourbano_mysql_data

@@ -24,6 +24,19 @@ docker-compose up
 
 - remove:
 remove  -> docker-compose down -v
+remove all -> docker-compose down --rmi all
+
+# Para os containers se estiverem rodando
+docker-compose down
+
+# Remove containers antigos e cache se necessário
+docker-compose down -v
+docker system prune -f   # opcional, só se quiser limpar cache
+
+ docker-compose down --volumes --remove-orphans
+
+
+
 cria -> docker-compose up --build
 
 docker system prune -a --volumes (comando base que inicia o processo de limpeza.
