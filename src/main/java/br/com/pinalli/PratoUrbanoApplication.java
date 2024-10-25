@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "br.com.pinalli.repository")
-
 public class PratoUrbanoApplication {
 
     public static void main(String[] args) {

@@ -7,3 +7,11 @@
 
 docker logs pratourbano-app -f  # para acompanhar logs em tempo real
 docker network inspect pratourbano-net  # para verificar a rede
+
+
+Verificar os endpoints:
+   - Eureka: http://localhost:8761
+   - Seu serviço: http://localhost:8080
+   - Actuator: http://localhost:8080/actuator
+   -  Health: http://localhost:8080/actuator/health
+   - Info: http://localhost:8080/actuator/info
