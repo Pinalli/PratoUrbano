@@ -1,18 +1,30 @@
-FROM maven:3.8.4-openjdk-17-slim AS builder
+# Etapa de compilação (imagem temporária)
+FROM openjdk:17-slim AS builder
+
+# Instalar o Maven
+RUN apt-get update && apt-get install -y maven
 
 WORKDIR /app
 
 # Copiar o POM raiz
-COPY . .
+COPY pom.xml .
 
-# Construir com Maven
-RUN mvn clean package -DskipTests
+# Copiar os módulos
+COPY ./pagamentos/pom.xml ./pagamentos/
+COPY ./pagamentos/src ./pagamentos/src
+COPY ./pedidos/pom.xml ./pedidos/
+COPY ./pedidos/src ./pedidos/src
 
-# Etapa final
-FROM eclipse-temurin:17-jre-focal
+# Build dos módulos
+RUN mvn clean package -DskipTests -pl pagamentos,pedidos
+
+# Etapa final (imagem final)
+FROM openjdk:17-slim
 
 WORKDIR /app
-COPY --from=builder /app/pagamentos/target/*.jar app.jar
+COPY --from=builder /app/pagamentos/target/*.jar pagamentos.jar
+COPY --from=builder /app/pedidos/target/*.jar pedidos.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "pagamentos.jar"]
