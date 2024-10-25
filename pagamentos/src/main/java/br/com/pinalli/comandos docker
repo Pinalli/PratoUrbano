@@ -1,0 +1,77 @@
+
+- build
+docker-compose up --build
+docker-compose build --no-cache
+
+docker-compose up -d (-d (detached mode): Executa os containers em segundo plano (background), permitindo
+                        que o terminal continue disponível para outros comandos enquanto
+                        os serviços continuam rodando.)
+
+- Start:
+docker-compose up
+docker-compose up --force-recreate
+
+- Monitore os logs em tempo real:
+docker-compose logs -f
+
+-Verifique os volumes usando o Docker CLI:
+docker inspect pratourbano-mysql
+
+-Limpar o log do InnoDB (caso os dados não sejam críticos):
+docker-compose down
+rm -rf /caminho/do/seu/mysql-data
+docker-compose up
+
+- remove:
+remove  -> docker-compose down -v
+remove all -> docker-compose down --rmi all
+
+# Para os containers se estiverem rodando
+docker-compose down
+
+# Remove containers antigos e cache se necessário
+docker-compose down -v
+docker system prune -f   # opcional, só se quiser limpar cache
+
+ docker-compose down --volumes --remove-orphans
+
+
+
+cria -> docker-compose up --build
+
+docker system prune -a --volumes (comando base que inicia o processo de limpeza.
+                                  -a: Este flag adiciona um "coringa", indicando que você quer remover todos os componentes não utilizados, sem exceções.
+                                  --volumes: Esta flag específica que você também deseja remover os volumes não utilizados. Volumes são diretórios persistentes que podem ser montad (Limpe qualquer container ou volume residual)
+docker-compose down -v
+docker volume rm pratourbano_mysql_data
+
+docker-compose down
+docker system prune -a
+
+
+
+- Verifique se foi usado o volume do Docker:
+docker volume ls
+docker volume rm nome_do_volume
+
+
+- complet Clean:
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+docker volume prune
+docker-compose build --no-cache
+
+
+- backup database
+docker exec pratourbano-mysql mysqldump -u root -proot pratourbano-pagamento > backup.sql
+#import
+docker exec -i pratourbano-mysql mysql -u root -proot pratourbano-pagamento < backup.sql
+
+
+===============MAVEN==============
+- mvn clean
+mvn clean
+mvn dependency:purge-local-repository
+
+- Forçar a atualização do repositório Maven:
+mvn clean install -U

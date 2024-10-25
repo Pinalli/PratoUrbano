@@ -1,0 +1,6 @@
+Verificar os endpoints:
+   - Eureka: http://localhost:8761
+   - Seu serviço: http://localhost:8080
+   - Actuator: http://localhost:8080/actuator
+   -  Health: http://localhost:8080/actuator/health
+   - Info: htt
