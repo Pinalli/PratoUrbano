@@ -1,4 +1,4 @@
-package br.com.pinalli.pedidos.model;
+package br.com.pinalli.model;
 
 public enum Status {
     REALIZADO,

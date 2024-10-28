@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "br.com.pinalli.repository")
-public class PratoUrbanoApplication {
+public class PagamentosApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PratoUrbanoApplication.class, args);
+        SpringApplication.run(PagamentosApplication .class, args);
     }
 }

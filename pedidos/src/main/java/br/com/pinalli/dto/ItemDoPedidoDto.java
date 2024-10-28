@@ -1,4 +1,4 @@
-package br.com.pinalli.pedidos.dto;
+package br.com.pinalli.dto;
 
 import lombok.*;
 

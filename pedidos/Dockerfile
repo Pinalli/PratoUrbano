@@ -1,8 +1,9 @@
+#PEDIDOS
 FROM maven:3.8.4-openjdk-17-slim AS builder
 
 WORKDIR /app
 
-# Copiar todo o projeto
+# Copiar o POM raiz
 COPY . .
 
 # Construir com Maven

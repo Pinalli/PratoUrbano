@@ -1,7 +1,7 @@
-package br.com.pinalli.pedidos.repository;
+package br.com.pinalli.repository;
 
-import br.com.pinalli.pedidos.model.Pedido;
-import br.com.pinalli.pedidos.model.Status;
+import br.com.pinalli.model.Pedido;
+import br.com.pinalli.model.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

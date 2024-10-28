@@ -1,4 +1,4 @@
-package br.com.pinalli.pedidos.config;
+package br.com.pinalli.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

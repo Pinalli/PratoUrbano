@@ -1,3 +1,4 @@
+#PAGAMENTOS
 FROM maven:3.8.4-openjdk-17-slim AS builder
 
 WORKDIR /app
@@ -10,7 +11,6 @@ RUN mvn clean package -DskipTests
 
 # Etapa final
 FROM eclipse-temurin:17-jre-focal
-
 WORKDIR /app
 COPY --from=builder /app/pagamentos/target/*.jar app.jar
 

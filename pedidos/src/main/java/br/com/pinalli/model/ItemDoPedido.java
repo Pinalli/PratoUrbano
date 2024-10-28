@@ -1,4 +1,4 @@
-package br.com.pinalli.pedidos.model;
+package br.com.pinalli.model;
 
 import lombok.*;
 import jakarta.persistence.*;
@@ -13,6 +13,7 @@ import javax.validation.constraints.Positive;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemDoPedido {
+
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;

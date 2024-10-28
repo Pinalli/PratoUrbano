@@ -1,16 +1,18 @@
 
-POST http://localhost:8082/pedidos
+POST http://localhost:8081/pedidos
 Content-Type: application/json
 
 {
   "itens": [
     {
         "quantidade": 10,
-        "descrição": "Coca-cola"
+        "descrição": "Coca-cola",
+        "status": "CONFIRMADO"
     },
     {
         "quantidade": 5,
-        "descrição": "Mc Chicken"
+        "descrição": "Mc Chicken",
+         "status": "ENTREGUE"
     }
     ]
 

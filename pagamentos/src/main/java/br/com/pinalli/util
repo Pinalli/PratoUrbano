@@ -15,3 +15,8 @@ Verificar os endpoints:
    - Actuator: http://localhost:8080/actuator
    -  Health: http://localhost:8080/actuator/health
    - Info: http://localhost:8080/actuator/info
+
+
+  SWAGGER
+    -  http://localhost:8080/swagger-ui.html  (para o serviço de pagamentos)
+    -  http://localhost:8081/swagger-ui.html  (para o serviço de pedidos)

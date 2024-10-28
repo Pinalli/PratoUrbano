@@ -1,10 +1,10 @@
-package br.com.pinalli.pedidos.service;
+package br.com.pinalli.service;
 
-import br.com.pinalli.pedidos.dto.PedidoDto;
-import br.com.pinalli.pedidos.dto.StatusDto;
-import br.com.pinalli.pedidos.model.Pedido;
-import br.com.pinalli.pedidos.model.Status;
-import br.com.pinalli.pedidos.repository.PedidoRepository;
+import br.com.pinalli.dto.PedidoDto;
+import br.com.pinalli.dto.StatusDto;
+import br.com.pinalli.model.Pedido;
+import br.com.pinalli.model.Status;
+import br.com.pinalli.repository.PedidoRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
@@ -22,10 +22,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PedidoService {
 
-    @Autowired
-    private PedidoRepository repository;
 
-    @Autowired
+    private final PedidoRepository repository;
     private final ModelMapper modelMapper;
 
 
@@ -44,7 +42,6 @@ public class PedidoService {
 
     public PedidoDto criarPedido(PedidoDto dto) {
         Pedido pedido = modelMapper.map(dto, Pedido.class);
-
         pedido.setDataHora(LocalDateTime.now());
         pedido.setStatus(Status.REALIZADO);
         pedido.getItens().forEach(item -> item.setPedido(pedido));

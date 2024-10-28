@@ -1,2 +1,2 @@
-GET http://localhost:8761/pedidos
-Content-Type: application/json
+GET http://localhost:8081/pedidos
+

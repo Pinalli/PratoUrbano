@@ -1,6 +1,6 @@
-package br.com.pinalli.pedidos.dto;
+package br.com.pinalli.dto;
 
-import br.com.pinalli.pedidos.model.Status;
+import br.com.pinalli.model.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

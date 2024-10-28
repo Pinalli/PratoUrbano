@@ -1,7 +1,6 @@
 spring:
   application:
-    name: pagamentos-ms
-
+    name: PAGAMENTOS-MS
   jpa:
     hibernate:
       ddl-auto: none
@@ -13,6 +12,19 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}
+      defaultZone: http://host.docker.internal:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
   instance:
     preferIpAddress: true
+    hostname: ${spring.application.name}
+    instance-id: ${spring.application.name}:${random.uuid}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

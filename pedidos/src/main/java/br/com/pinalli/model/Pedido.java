@@ -1,4 +1,5 @@
-package br.com.pinalli.pedidos.model;
+package br.com.pinalli.model;
+
 
 import lombok.*;
 import jakarta.persistence.*;
@@ -18,13 +19,10 @@ public class Pedido {
 
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
-
-    @NonNull
     private LocalDateTime dataHora;
-
-    @NonNull @Enumerated(EnumType.STRING)
-    private Status status;
+    @Enumerated(EnumType.STRING)
+    private br.com.pinalli.model.Status status;
 
     @OneToMany(cascade=CascadeType.PERSIST, mappedBy="pedido")
-    private List<ItemDoPedido> itens = new ArrayList<>();
+    private List<br.com.pinalli.model.ItemDoPedido> itens = new ArrayList<>();
 }
