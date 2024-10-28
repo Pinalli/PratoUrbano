@@ -1,18 +1,19 @@
+version: '3.8'  # A versão é obsoleta, você pode removê-la
+
 services:
+  eureka:
+    build:
+      context: eureka  # Atualize se necessário
+    ports:
+      - "8761:8761"
+    networks:
+      - pratourbano-network
+
   mysql-pagamentos:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: pagamento_db
-    ports:
-      - "3306:3306"
-    volumes:
-      - pagamentos-db-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     networks:
       - pratourbano-network
 
@@ -21,100 +22,52 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: pedidos_db
-    ports:
-      - "3307:3306"
-    volumes:
-      - pedidos-db-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     networks:
       - pratourbano-network
 
   pagamentos-ms:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: ["java", "-jar", "/app/pagamentos.jar"]
-    container_name: pagamentos-ms
+    image: pratourbano/pagamentos:latest
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-pagamentos:3306/pagamento_db
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://host.docker.internal:8761/eureka/
-      - EUREKA_INSTANCE_HOSTNAME=pagamentos-ms
-    healthcheck: # Adicionar healthcheck
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-pagamentos:3306/pagamento_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      EUREKA_INSTANCE_HOSTNAME: pagamentos-ms
+    deploy:
+      replicas: 3
     networks:
       - pratourbano-network
-    depends_on:
-      mysql-pagamentos:
-        condition: service_healthy
 
   pedidos-ms:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: ["java", "-jar", "/app/pedidos.jar"]
-    container_name: pedidos-ms
+    image: pratourbano/pedidos:latest
     ports:
       - "8081:8081"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-pedidos:3306/pedidos_db
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://host.docker.internal:8761/eureka/
-      - EUREKA_INSTANCE_HOSTNAME=pedidos-ms
-    healthcheck: # Adicionar healthcheck
-      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-pedidos:3306/pedidos_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      EUREKA_INSTANCE_HOSTNAME: pedidos-ms
+    deploy:
+      replicas: 3
     networks:
       - pratourbano-network
-    depends_on:
-      mysql-pedidos:
-        condition: service_healthy
 
   gateway-ms:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: [ "java", "-jar", "/app/gateway.jar" ]
-    container_name: gateway-ms
+    image: pratourbano/gateway:latest
     ports:
       - "8082:8082"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://host.docker.internal:8761/eureka/
-      - EUREKA_INSTANCE_HOSTNAME=gateway-ms
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      EUREKA_INSTANCE_HOSTNAME: gateway-ms
     networks:
       - pratourbano-network
 
 networks:
   pratourbano-network:
-    driver: bridge
-
-volumes:
-  pagamentos-db-data:
-  pedidos-db-data:
+    driver: overlay  # Certifique-se de usar o driver overlay
