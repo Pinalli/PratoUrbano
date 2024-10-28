@@ -18,6 +18,7 @@
     <modules>
         <module>pagamentos</module>
         <module>pedidos</module>
+        <module>gateway</module>
     </modules>
 
     <properties>

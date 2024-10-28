@@ -1,0 +1,46 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: GATEWAY-MS
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+      routes:
+        - id: pedidos-service
+          uri: lb://PEDIDOS-MS
+          predicates:
+            - Path=/pedidos/**
+          filters:
+            - RewritePath=/pedidos/(?<segment>.*), /$\{segment}
+
+        - id: pagamentos-service
+          uri: lb://PAGAMENTOS-MS
+          predicates:
+            - Path=/pagamentos/**
+          filters:
+            - RewritePath=/pagamentos/(?<segment>.*), /$\{segment}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://host.docker.internal:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    preferIpAddress: true
+    hostname: gateway-ms
+    instance-id: ${spring.application.name}:${random.uuid}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
