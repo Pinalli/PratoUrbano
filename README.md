@@ -5,26 +5,40 @@ PratoUrbano é um sistema baseado em arquitetura de microsserviços, desenvolvid
 
 ## 🏗️ Arquitetura
 
-O projeto é composto pelos seguintes componentes:
+# Projeto PratoUrbano
 
-- **API Gateway**
-  - Gerencia o roteamento das requisições
-  - Registrado no Eureka Server
-  - Containerizado com Docker
+O projeto **PratoUrbano** é composto pelos seguintes componentes:
 
-- **Serviço de Pedidos**
-  - Gerencia o ciclo de vida dos pedidos
-  - Banco de dados MySQL próprio
-  - Migrations controladas pelo Flyway
-  - Registrado no Eureka Server
+## 1. **Eureka Server**
+   - **Descrição**: Serviço de descoberta que registra e monitora os microsserviços, permitindo comunicação entre eles.
+   - **Detalhes**:
+     - Todos os serviços, incluindo o Gateway, os serviços de Pedidos e Pagamentos, estão registrados no Eureka Server.
+     - Facilita a escalabilidade e o balanceamento de carga entre as instâncias dos microsserviços.
 
-- **Serviço de Pagamentos**
-  - Processa os pagamentos dos pedidos
-  - Banco de dados MySQL próprio
-  - Migrations controladas pelo Flyway
-  - Registrado no Eureka Server
+## 2. **API Gateway**
+   - **Função**: Gerencia o roteamento das requisições para os serviços internos.
+   - **Detalhes**:
+     - Registrado no Eureka Server, onde é possível localizá-lo e mantê-lo monitorado.
+     - Containerizado com Docker para garantir portabilidade e fácil implantação.
 
-**Nota:** O projeto depende de um servidor Eureka externo que deve estar em execução antes de iniciar os serviços do PratoUrbano.
+## 3. **Serviço de Pedidos**
+   - **Função**: Gerencia o ciclo de vida dos pedidos, incluindo criação, atualização e consulta de pedidos.
+   - **Detalhes**:
+     - Utiliza uma instância de banco de dados MySQL própria para armazenamento de dados de pedidos.
+     - Controle de migrações de banco de dados feito com Flyway, garantindo consistência e versionamento dos dados.
+     - Registrado no Eureka Server, tornando-o localizável e monitorado junto aos demais serviços.
+
+## 4. **Serviço de Pagamentos**
+   - **Função**: Processa os pagamentos associados aos pedidos no sistema.
+   - **Detalhes**:
+     - Banco de dados MySQL próprio para manter os dados de pagamento independentes.
+     - Controle de migrações de banco de dados feito com Flyway para assegurar a consistência dos dados e versionamento.
+     - Registrado no Eureka Server, o que facilita sua descoberta e monitoramento.
+
+---
+
+Essa estrutura permite a fácil comunicação entre serviços e facilita a escalabilidade do sistema. O **Eureka Server** atua como um ponto central de registro, enquanto o **Gateway** controla o tráfego de entrada, e os serviços de **Pedidos** e **Pagamentos** operam de forma independente com seus próprios bancos de dados.
+
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -36,6 +50,7 @@ O projeto é composto pelos seguintes componentes:
 - MySQL
 - Flyway
 - Maven
+- Eureka
 
 ## 📦 Pré-requisitos
 
@@ -70,22 +85,37 @@ Este comando irá:
 
 ## 🗄️ Estrutura do Projeto
   ```
-  prato-urbano/
-├── docker-compose.yml
-├── Dockerfile
-├── pom.xml
+PratoUrbano/<br>
+│
+├── eureka-server/
+│   ├── src/
+│   ├── Dockerfile
+│   └── pom.xml
+│
 ├── gateway/
 │   ├── src/
 │   ├── Dockerfile
+│   ├── application.yml
+│   ├── application-docker.yml
 │   └── pom.xml
-├── servico-pedidos/
+│
+├── pagamentos/
 │   ├── src/
 │   ├── Dockerfile
+│   ├── application.yml
+│   ├── application-docker.yml
+│   └── pom.xml<br>
+│
+├── pedidos/
+│   ├── src/
+│   ├── Dockerfile
+│   ├── application.yml
+│   ├── application-docker.yml
 │   └── pom.xml
-└── servico-pagamentos/
-    ├── src/
-    ├── Dockerfile
-    └── pom.xml
+│
+├── docker-compose.yml
+└── pom.xml
+
 ```
 ## 🔄 Migrations
 As migrations são gerenciadas pelo Flyway e são executadas automaticamente quando os serviços são iniciados. Elas estão localizadas em:    
