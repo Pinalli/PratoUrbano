@@ -69,6 +69,7 @@ Certifique-se de que o servidor Eureka esteja rodando na porta padrão (8761) an
 
 ```bash
 # Na raiz do projeto
+docker-compose build
 docker-compose up -d
 ````
 Este comando irá:
@@ -143,8 +144,38 @@ As configurações incluem:
 ## 🚦 Status do Serviço
 Para verificar o status de cada serviço, você pode acessar:
 
-+ Gateway: http://localhost:8080/actuator/health
++ Gateway: http://localhost:8082/actuator/health+
++ Serviço de Pagamentos: http://localhost:8080/actuator/health
 + Serviço de Pedidos: http://localhost:8081/actuator/health
+
+
+  
+## Acesso aos Serviços via Gateway
+O projeto utiliza um Gateway Spring Cloud para centralizar o acesso aos diferentes serviços. Após subir a aplicação completa com o Docker Compose, você pode acessar os serviços através das seguintes URLs:
+
+## Serviço de Pagamentos
+Acesse o serviço de Pagamentos através da URL:
+```
+http://localhost:8082/pagamentos-ms/pagamentos
+```
+## Serviço de Pedidos
+Acesse o serviço de Pedidos através da URL:
+```
+http://localhost:8082/pedidos-ms/pedidos
+```
+
+Todas as requisições para os serviços de **Pagamentos** e **Pedidos** devem ser feitas através do **Gateway** na porta `8082`. O Gateway é responsável por rotear as requisições para o serviço correto, além de prover funcionalidades como balanceamento de carga, circuit breaker, etc.
+
+Essa abordagem de utilizar um Gateway centralizado traz os seguintes benefícios:
+
+- **Desacoplamento**: Os serviços ficam independentes e podem ser atualizados ou substituídos sem afetar o resto da aplicação.
+- **Roteamento e Balanceamento**: O Gateway cuida do roteamento das requisições e do balanceamento de carga entre as instâncias dos serviços.
+- **Segurança e Monitoramento**: O Gateway pode ser o ponto de entrada para autenticação, autorização e monitoramento das requisições.
+- **Resiliência**: Funcionalidades como circuit breaker podem ser implementadas no Gateway para lidar com falhas nos serviços.
+
+Portanto, todas as interações com a aplicação devem ser feitas através do **Gateway** na porta `8082`, que irá encaminhar as requisições para o serviço correto.
+
+
 ## 🛟 Suporte
 Para reportar problemas ou sugerir melhorias, por favor abra uma issue no repositório.
 
