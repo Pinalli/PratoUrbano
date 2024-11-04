@@ -18,25 +18,14 @@ spring:
           predicates:
             - Path=/pedidos/**
           filters:
-            - RewritePath=/pedidos/(?<segment>.*), /$\{segment}
+            - RewritePath=/pedidos/(?<segment>.*), /${segment}
 
         - id: pagamentos-service
           uri: lb://PAGAMENTOS-MS
           predicates:
             - Path=/pagamentos/**
           filters:
-            - RewritePath=/pagamentos/(?<segment>.*), /$\{segment}
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://host.docker.internal:8761/eureka/
-    fetch-registry: true
-    register-with-eureka: true
-  instance:
-    preferIpAddress: true
-    hostname: gateway-ms
-    instance-id: ${spring.application.name}:${random.uuid}
+            - RewritePath=/pagamentos/(?<segment>.*), /${segment}
 
 management:
   endpoints:
@@ -46,3 +35,18 @@ management:
   endpoint:
     health:
       show-details: always
+logging:
+  level:
+    com.netflix.eureka: DEBUG
+    com.netflix.discovery: DEBUG
+    org.springframework.cloud.netflix.eureka: DEBUG
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/ # O URL do Eureka Server
+    registerWithEureka: true
+    fetchRegistry: true
+  instance:
+    preferIpAddress: true
+    instanceId: ${spring.application.name}:${random.value}

@@ -25,6 +25,8 @@ docker-compose up
 - remove:
 remove  -> docker-compose down -v
 remove all -> docker-compose down --rmi all
+docker system prune -a
+
 
 # Para os containers se estiverem rodando
 docker-compose down
@@ -46,7 +48,13 @@ docker-compose down -v
 docker volume rm pratourbano_mysql_data
 
 docker-compose down
+docker system prune -a -f
 docker system prune -a
+docker volume prune
+docker system prune -a --volumes
+ docker-compose down --volumes --remove-orphans
+
+docker-compose down; docker-compose up --build
 
 
 

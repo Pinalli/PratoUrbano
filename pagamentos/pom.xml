@@ -8,8 +8,9 @@
         <groupId>br.com.pratourbano</groupId>
         <artifactId>prato-urbano</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath> <!-- Ajuste este caminho se necessário -->
+        <relativePath>../pom.xml</relativePath>
     </parent>
+
     <artifactId>pagamentos</artifactId>
 
 

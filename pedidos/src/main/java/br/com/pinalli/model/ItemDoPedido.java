@@ -1,9 +1,10 @@
 package br.com.pinalli.model;
 
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import jakarta.persistence.*;
 
-import javax.validation.constraints.Positive;
+
 
 
 @Entity

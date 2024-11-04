@@ -1,0 +1,22 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: EUREKA-SERVER
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+    instanceId: ${spring.application.name}:${random.value}
+  server:
+    waitTimeInMsWhenSyncEmpty: 0
+    enable-self-preservation: false

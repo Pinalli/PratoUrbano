@@ -28,3 +28,8 @@ management:
   endpoint:
     health:
       show-details: always
+logging:
+  level:
+    com.netflix.eureka: DEBUG
+    com.netflix.discovery: DEBUG
+    org.springframework.cloud.netflix.eureka: DEBUG

@@ -3,6 +3,8 @@ package br.com.pinalli.controller;
 import br.com.pinalli.dto.PedidoDto;
 import br.com.pinalli.dto.StatusDto;
 import br.com.pinalli.service.PedidoService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+
 import java.net.URI;
 import java.util.List;
 

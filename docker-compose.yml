@@ -1,73 +1,132 @@
-version: '3.8'  # A versão é obsoleta, você pode removê-la
+
 
 services:
-  eureka:
+  eureka-server:
     build:
-      context: eureka  # Atualize se necessário
+      context: .
+      dockerfile: ./eureka-server/Dockerfile
+    container_name: eureka-server
     ports:
       - "8761:8761"
     networks:
       - pratourbano-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   mysql-pagamentos:
     image: mysql:8.0
+    container_name: mysql-pagamentos
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: pagamento_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - pagamentos-db-data:/var/lib/mysql
     networks:
       - pratourbano-network
-
-  mysql-pedidos:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: pedidos_db
-    networks:
-      - pratourbano-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "mysql-pagamentos", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   pagamentos-ms:
-    image: pratourbano/pagamentos:latest
+    build:
+      context: .
+      dockerfile: ./pagamentos/Dockerfile
+    container_name: pagamentos-ms
     ports:
       - "8080:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-pagamentos:3306/pagamento_db
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      EUREKA_INSTANCE_HOSTNAME: pagamentos-ms
-    deploy:
-      replicas: 3
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-pagamentos:3306/pagamento_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_INSTANCE_PREFERIPADDRESS=true
+      - SPRING_APPLICATION_NAME=PAGAMENTOS-MS # Corrigido
     networks:
       - pratourbano-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      mysql-pagamentos:
+        condition: service_healthy
+
+  mysql-pedidos:
+    image: mysql:8.0
+    container_name: mysql-pedidos
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pedidos_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - pedidos-db-data:/var/lib/mysql
+    networks:
+      - pratourbano-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "mysql-pedidos", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   pedidos-ms:
-    image: pratourbano/pedidos:latest
+    build:
+      context: .
+      dockerfile: ./pedidos/Dockerfile
+    container_name: pedidos-ms
     ports:
       - "8081:8081"
     environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-pedidos:3306/pedidos_db
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      EUREKA_INSTANCE_HOSTNAME: pedidos-ms
-    deploy:
-      replicas: 3
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-pedidos:3306/pedidos_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_INSTANCE_PREFERIPADDRESS=true
     networks:
       - pratourbano-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      mysql-pedidos:
+        condition: service_healthy
 
   gateway-ms:
-    image: pratourbano/gateway:latest
+    build:
+      context: .
+      dockerfile: ./gateway/Dockerfile
+    container_name: gateway-ms
     ports:
       - "8082:8082"
     environment:
-      SPRING_PROFILES_ACTIVE: docker
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      EUREKA_INSTANCE_HOSTNAME: gateway-ms
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_INSTANCE_PREFERIPADDRESS=true
     networks:
       - pratourbano-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
 
 networks:
   pratourbano-network:
-    driver: overlay  # Certifique-se de usar o driver overlay
+    driver: bridge
+
+volumes:
+  pagamentos-db-data:
+  pedidos-db-data:
