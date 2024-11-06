@@ -1,0 +1,6 @@
+PUT http://localhost:8082/pedidos-ms/pedidos/1/status
+Content-Type: application/json
+
+{
+"status": "REALIZADO"
+}

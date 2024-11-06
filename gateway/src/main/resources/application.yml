@@ -27,6 +27,16 @@ spring:
           filters:
             - RewritePath=/pagamentos/(?<segment>.*), /${segment}
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/ # O URL do Eureka Server
+    registerWithEureka: true
+    fetchRegistry: true
+  instance:
+    preferIpAddress: true
+    instanceId: ${spring.application.name}:${random.value}
+
 management:
   endpoints:
     web:
@@ -41,12 +51,3 @@ logging:
     com.netflix.discovery: DEBUG
     org.springframework.cloud.netflix.eureka: DEBUG
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://eureka-server:8761/eureka/ # O URL do Eureka Server
-    registerWithEureka: true
-    fetchRegistry: true
-  instance:
-    preferIpAddress: true
-    instanceId: ${spring.application.name}:${random.value}

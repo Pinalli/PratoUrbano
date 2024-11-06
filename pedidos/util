@@ -3,4 +3,8 @@ Verificar os endpoints:
    - Seu serviço: http://localhost:8080
    - Actuator: http://localhost:8080/actuator
    -  Health: http://localhost:8080/actuator/health
-   - Info: htt
+   -
+
+
+   ADCIONA INSTANCIAS DO GATEWAY
+   docker-compose up --scale pedidos-ms=3

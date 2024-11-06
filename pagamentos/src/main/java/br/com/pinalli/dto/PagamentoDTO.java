@@ -1,9 +1,11 @@
 package br.com.pinalli.dto;
 
 
+import br.com.pinalli.model.Status;
 import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
+
 
 
 @Getter
@@ -15,16 +17,9 @@ public class PagamentoDTO {
     private String numero;
     private String expiracao;
     private String codigo;
-
-
-    private StatusPagamento status;
-
+    private Status status;
     private Long formaDePagamentoId;
     private Long pedidoId;
 
-    public enum StatusPagamento {
-        CRIADO,
-        CONFIRMADO,
-        CANCELADO;
-    }
+
 }

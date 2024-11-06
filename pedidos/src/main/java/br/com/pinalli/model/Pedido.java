@@ -1,6 +1,7 @@
 package br.com.pinalli.model;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import jakarta.persistence.*;
 
@@ -19,10 +20,14 @@ public class Pedido {
 
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
     private LocalDateTime dataHora;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
-    private br.com.pinalli.model.Status status;
+    private Status status;
 
     @OneToMany(cascade=CascadeType.PERSIST, mappedBy="pedido")
-    private List<br.com.pinalli.model.ItemDoPedido> itens = new ArrayList<>();
+    private List<ItemDoPedido> itens = new ArrayList<>();
 }

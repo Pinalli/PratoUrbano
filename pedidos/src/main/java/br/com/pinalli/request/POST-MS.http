@@ -1,0 +1,19 @@
+
+POST  http://localhost:8082/pedidos-ms/pedidos
+Content-Type: application/json
+
+{
+  "itens": [
+    {
+      "quantidade": 3,
+      "descrição": "Mac triplo",
+      "status": "CONFIRMADO"
+    },
+    {
+      "quantidade": 5,
+      "descrição": "Mc Chicken",
+      "status": "ENTREGUE"
+    }
+  ]
+
+}

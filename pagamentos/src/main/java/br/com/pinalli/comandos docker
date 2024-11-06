@@ -27,6 +27,9 @@ remove  -> docker-compose down -v
 remove all -> docker-compose down --rmi all
 docker system prune -a
 
+-- REBUILD
+docker-compose up -d --build (para forçar a reconstrução dos contêineres afetados pelas suas alterações de código.)
+
 
 # Para os containers se estiverem rodando
 docker-compose down

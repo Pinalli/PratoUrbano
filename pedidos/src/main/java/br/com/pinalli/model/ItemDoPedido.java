@@ -1,10 +1,8 @@
 package br.com.pinalli.model;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
-import jakarta.persistence.*;
-
-
 
 
 @Entity

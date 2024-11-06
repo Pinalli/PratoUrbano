@@ -52,17 +52,20 @@ public class PagamentoController {
         return pagamentoService.obterTodos(paginacao);
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<PagamentoDTO> details(@PathVariable @NotNull Long id) {
         PagamentoDTO dto = pagamentoService.obterPorId(id);
         return ResponseEntity.ok(dto);
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<PagamentoDTO> delete(@PathVariable @NotNull Long id) {
         pagamentoService.excluirPagamento(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/confirmar")
+    public void confirmarPagamento(@PathVariable @NotNull Long id) {
+        pagamentoService.confirmarPagamento(id);
     }
 }
