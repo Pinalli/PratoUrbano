@@ -68,10 +68,31 @@ Você pode monitorar o estado do Circuit Breaker através do endpoint:
   ```
 http://localhost:8080/actuator/circuitbreakers
   ```
----
 
 Essa estrutura permite a fácil comunicação entre serviços e facilita a escalabilidade do sistema. O **Eureka Server** atua como um ponto central de registro, enquanto o **Gateway** controla o tráfego de entrada, e os serviços de **Pedidos** e **Pagamentos** operam de forma independente com seus próprios bancos de dados.
 
+## 📚 Documentação da API com Swagger
+
+O projeto **PratoUrbano** inclui a documentação da API gerada pelo **Springdoc OpenAPI** (Swagger), facilitando a exploração e o teste das APIs dos microsserviços.
+
+### Endpoints da Documentação
+Cada serviço possui sua própria documentação Swagger, acessível através das seguintes URLs:
+
+- **API Gateway**:
+- **Serviço de Pedidos**:
+[Acesse a documentação do Serviço de Pedidos](http://localhost:8081/swagger-ui/index.html#/)
+- **Serviço de Pagamentos**:
+[Acesse a documentação do Serviço de Pagamentos](http://localhost:8080/swagger-ui/index.html#/)
+
+### Detalhes
+- A documentação inclui todas as rotas expostas por cada serviço, detalhando os métodos HTTP, parâmetros de entrada, exemplos de resposta, entre outros.
+- Para personalizar a documentação, foi criada a classe `OpenApiConfig` em cada serviço, definindo as informações de título, versão e descrição de cada API.
+
+### Benefícios
+- **Exploração Simplificada**: Navegação intuitiva para explorar os endpoints disponíveis.
+- **Testes Rápidos**: Permite fazer chamadas diretas para a API através da interface web do Swagger.
+- **Consistência**: Documentação atualizada automaticamente com base nas mudanças nos controladores do Spring Boot.
+---
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -86,6 +107,7 @@ Essa estrutura permite a fácil comunicação entre serviços e facilita a escal
 - Eureka
 - OpenFeign - Comunicação síncrona entre serviços
 - Resilience4j - Circuit Breaker para resiliência
+- Springdoc OpenAPI (Swagger), facilitando a exploração e o teste das APIs dos microsserviços
 
 ## 📦 Pré-requisitos
 
