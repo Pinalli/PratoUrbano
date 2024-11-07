@@ -1,6 +1,28 @@
 
 
 services:
+
+  rabbitmq:
+    image: rabbitmq:3.10-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./dados:/var/lib/rabbitmq/
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitm
+      - RABBITMQ_DEFAULT_PASS=pratourbano
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+    networks:
+      - pratourbano-network
+
   eureka-server:
     build:
       context: .
@@ -54,6 +76,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - EUREKA_INSTANCE_PREFERIPADDRESS=true
+      - RABBITMQ_HOST=rabbitmq
       - SPRING_APPLICATION_NAME=PAGAMENTOS-MS
     networks:
       - pratourbano-network
@@ -98,6 +121,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - EUREKA_INSTANCE_PREFERIPADDRESS=true
+      - RABBITMQ_HOST=rabbitmq
+      - SPRING_APPLICATION_NAME=PEDIDOS-MS
     networks:
       - pratourbano-network
     depends_on:
@@ -117,6 +142,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - EUREKA_INSTANCE_PREFERIPADDRESS=true
+      - RABBITMQ_HOST=rabbitmq
     networks:
       - pratourbano-network
     depends_on:
