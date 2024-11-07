@@ -79,7 +79,7 @@ public class PagamentoService {
     public void confirmarPagamento(Long id) {
         Optional<Pagamento> pagamento = repository.findById(id);
 
-        if (!pagamento.isPresent()) {
+        if (pagamento.isEmpty()) {
             throw new EntityNotFoundException();
         }
 
@@ -91,6 +91,18 @@ public class PagamentoService {
     @Transactional
     public void excluirPagamento(Long id) {
         repository.deleteById(id);
+    }
+
+    public void alteraStatus(Long id) {
+        Optional<Pagamento> pagamento = repository.findById(id);
+
+        if (pagamento.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+
+        pagamento.get().setStatus(Status.CONFIRMADO_SEM_INTEGRACAO);
+        repository.save(pagamento.get());
+
     }
 }
 

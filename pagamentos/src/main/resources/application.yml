@@ -28,8 +28,17 @@ management:
   endpoint:
     health:
       show-details: always
+
 logging:
   level:
     com.netflix.eureka: DEBUG
     com.netflix.discovery: DEBUG
     org.springframework.cloud.netflix.eureka: DEBUG
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      atualizaPedido:
+        sliding-window-size: 3 #quantas requisicoes/estatisticas serão feitas para o circuit breaker(aberto/fechado)
+        minimum-number-of-calls: 2 #minimo chamadas até entrar em ação
+        wait-duration-in-open-state: 50s #quanto tempo mantem estado aberto
