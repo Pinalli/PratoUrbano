@@ -36,13 +36,38 @@ O projeto **PratoUrbano** é composto pelos seguintes componentes:
      - Registrado no Eureka Server, o que facilita sua descoberta e monitoramento.
 
 ## 5. **Comunicação entre Serviços**
-   - **Tecnologia**: OpenFeign para comunicação síncrona
+   - **Tecnologia**: OpenFeign com Resilience4j
    - **Detalhes**:
      - Implementação de clients declarativos para chamadas REST entre serviços
+     - Circuit Breaker para proteção contra falhas em cascata
+     - Configuração de janela deslizante para análise de falhas
+     - Monitoramento automático do estado da comunicação
+     - Fallback automático em caso de falhas
      - Integração entre os serviços de Pedidos e Pagamentos
-     - Configuração de timeout e retry para maior resiliência
-     - Preparado para implementação de circuit breaker
-     - Mapeamento automático de DTOs para facilitar a integração
+    
+### Circuit Breaker
+O sistema utiliza Resilience4j como implementação de Circuit Breaker para garantir resiliência na comunicação entre serviços:
+
+- **Configuração**:
+  - Janela deslizante: 3 chamadas
+  - Mínimo de chamadas: 2
+  - Tempo de espera no estado aberto: 50s
+
+- **Estados do Circuit Breaker**:
+  - CLOSED: Operação normal, requisições sendo processadas
+  - OPEN: Circuit breaker ativado, requisições são rejeitadas
+  - HALF_OPEN: Período de teste para verificar se o serviço se recuperou
+
+- **Monitoramento**:
+  - Métricas disponíveis via Actuator
+  - Endpoint de health check inclui estado do circuit breaker
+
+## 🔍 Monitoramento
+
+Você pode monitorar o estado do Circuit Breaker através do endpoint:
+  ```
+http://localhost:8080/actuator/circuitbreakers
+  ```
 ---
 
 Essa estrutura permite a fácil comunicação entre serviços e facilita a escalabilidade do sistema. O **Eureka Server** atua como um ponto central de registro, enquanto o **Gateway** controla o tráfego de entrada, e os serviços de **Pedidos** e **Pagamentos** operam de forma independente com seus próprios bancos de dados.
@@ -60,6 +85,7 @@ Essa estrutura permite a fácil comunicação entre serviços e facilita a escal
 - Maven
 - Eureka
 - OpenFeign - Comunicação síncrona entre serviços
+- Resilience4j - Circuit Breaker para resiliência
 
 ## 📦 Pré-requisitos
 
