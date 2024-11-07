@@ -68,10 +68,9 @@ Você pode monitorar o estado do Circuit Breaker através do endpoint:
   ```
 http://localhost:8080/actuator/circuitbreakers
   ```
----
 
 Essa estrutura permite a fácil comunicação entre serviços e facilita a escalabilidade do sistema. O **Eureka Server** atua como um ponto central de registro, enquanto o **Gateway** controla o tráfego de entrada, e os serviços de **Pedidos** e **Pagamentos** operam de forma independente com seus próprios bancos de dados.
----
+
 ## 📚 Documentação da API com Swagger
 
 O projeto **PratoUrbano** inclui a documentação da API gerada pelo **Springdoc OpenAPI** (Swagger), facilitando a exploração e o teste das APIs dos microsserviços.
