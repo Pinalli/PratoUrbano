@@ -1,7 +1,7 @@
 # PratoUrbano - Sistema de Microsserviços
 
 ## 📋 Sobre o Projeto
-PratoUrbano é um sistema baseado em arquitetura de microsserviços, desenvolvido com Spring Boot, que gerencia pedidos e pagamentos. O sistema utiliza Docker para containerização, MySQL como banco de dados, Flyway para controle de migrations e Netflix Eureka para service discovery.
+PratoUrbano é um sistema baseado em arquitetura de microsserviços, desenvolvido com Spring Boot, que gerencia pedidos e pagamentos. O sistema utiliza Docker para containerização, MySQL como banco de dados, Flyway para controle de migrations, Netflix Eureka para service discovery e RabbitMQ para comunicação assíncrona entre serviços.
 
 ## 🏗️ Arquitetura
 
@@ -35,32 +35,44 @@ O projeto **PratoUrbano** é composto pelos seguintes componentes:
      - Controle de migrações de banco de dados feito com Flyway para assegurar a consistência dos dados e versionamento.
      - Registrado no Eureka Server, o que facilita sua descoberta e monitoramento.
 
-## 5. **Comunicação entre Serviços**
+## 5. **RabbitMQ - Comunicação Assíncrona**
+   - **Função**: Facilita a comunicação assíncrona entre os microsserviços, permitindo um fluxo mais eficiente de mensagens.
+   - **Detalhes**:
+     - O RabbitMQ foi integrado ao sistema para que os serviços de **Pedidos** e **Pagamentos** possam trocar mensagens de forma desacoplada e eficiente.
+     - O RabbitMQ é executado como um serviço Docker separado e todos os microsserviços (Gateway, Pedidos e Pagamentos) são configurados para se comunicar com ele.
+     - A configuração do RabbitMQ inclui a autenticação com usuário `rabbitm` e senha `pratourbano`, para garantir a segurança na troca de mensagens.
+
+### Como o RabbitMQ é Utilizado:
+- **Serviço de Pedidos**: Envia notificações e informações sobre novos pedidos para o RabbitMQ, para que o **Serviço de Pagamentos** possa processá-los.
+- **Serviço de Pagamentos**: Recebe mensagens do RabbitMQ relacionadas a novos pedidos e processa os pagamentos de forma assíncrona.
+- **API Gateway**: Interage com os serviços que utilizam o RabbitMQ, permitindo que as requisições e respostas sejam processadas de forma eficiente.
+
+## 6. **Comunicação entre Serviços**
    - **Tecnologia**: OpenFeign com Resilience4j
    - **Detalhes**:
-     - Implementação de clients declarativos para chamadas REST entre serviços
-     - Circuit Breaker para proteção contra falhas em cascata
-     - Configuração de janela deslizante para análise de falhas
-     - Monitoramento automático do estado da comunicação
-     - Fallback automático em caso de falhas
-     - Integração entre os serviços de Pedidos e Pagamentos
-    
+     - Implementação de clients declarativos para chamadas REST entre serviços.
+     - Circuit Breaker para proteção contra falhas em cascata.
+     - Configuração de janela deslizante para análise de falhas.
+     - Monitoramento automático do estado da comunicação.
+     - Fallback automático em caso de falhas.
+     - Integração entre os serviços de Pedidos e Pagamentos.
+
 ### Circuit Breaker
 O sistema utiliza Resilience4j como implementação de Circuit Breaker para garantir resiliência na comunicação entre serviços:
 
 - **Configuração**:
-  - Janela deslizante: 3 chamadas
-  - Mínimo de chamadas: 2
-  - Tempo de espera no estado aberto: 50s
+  - Janela deslizante: 3 chamadas.
+  - Mínimo de chamadas: 2.
+  - Tempo de espera no estado aberto: 50s.
 
 - **Estados do Circuit Breaker**:
-  - CLOSED: Operação normal, requisições sendo processadas
-  - OPEN: Circuit breaker ativado, requisições são rejeitadas
-  - HALF_OPEN: Período de teste para verificar se o serviço se recuperou
+  - CLOSED: Operação normal, requisições sendo processadas.
+  - OPEN: Circuit breaker ativado, requisições são rejeitadas.
+  - HALF_OPEN: Período de teste para verificar se o serviço se recuperou.
 
 - **Monitoramento**:
-  - Métricas disponíveis via Actuator
-  - Endpoint de health check inclui estado do circuit breaker
+  - Métricas disponíveis via Actuator.
+  - Endpoint de health check inclui estado do circuit breaker.
 
 ## 🔍 Monitoramento
 
@@ -96,18 +108,19 @@ Cada serviço possui sua própria documentação Swagger, acessível através da
 
 ## 🚀 Tecnologias Utilizadas
 
-- Java
-- Spring Boot
-- Spring Cloud Netflix Eureka (Client)
-- Spring Cloud Gateway
-- Docker
-- MySQL
-- Flyway
-- Maven
-- Eureka
-- OpenFeign - Comunicação síncrona entre serviços
-- Resilience4j - Circuit Breaker para resiliência
-- Springdoc OpenAPI (Swagger), facilitando a exploração e o teste das APIs dos microsserviços
+- **Java**
+- **Spring Boot**
+- **Spring Cloud Netflix Eureka** (Client)
+- **Spring Cloud Gateway**
+- **Docker**
+- **MySQL**
+- **Flyway**
+- **Maven**
+- **Eureka**
+- **OpenFeign** - Comunicação síncrona entre serviços
+- **Resilience4j** - Circuit Breaker para resiliência
+- **Springdoc OpenAPI** (Swagger), facilitando a exploração e o teste das APIs dos microsserviços
+-  **RabbitMQ** - Comunicação assíncrona entre os microsserviços
 
 ## 📦 Pré-requisitos
 
