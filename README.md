@@ -35,6 +35,14 @@ O projeto **PratoUrbano** é composto pelos seguintes componentes:
      - Controle de migrações de banco de dados feito com Flyway para assegurar a consistência dos dados e versionamento.
      - Registrado no Eureka Server, o que facilita sua descoberta e monitoramento.
 
+## 5. **Comunicação entre Serviços**
+   - **Tecnologia**: OpenFeign para comunicação síncrona
+   - **Detalhes**:
+     - Implementação de clients declarativos para chamadas REST entre serviços
+     - Integração entre os serviços de Pedidos e Pagamentos
+     - Configuração de timeout e retry para maior resiliência
+     - Preparado para implementação de circuit breaker
+     - Mapeamento automático de DTOs para facilitar a integração
 ---
 
 Essa estrutura permite a fácil comunicação entre serviços e facilita a escalabilidade do sistema. O **Eureka Server** atua como um ponto central de registro, enquanto o **Gateway** controla o tráfego de entrada, e os serviços de **Pedidos** e **Pagamentos** operam de forma independente com seus próprios bancos de dados.
@@ -51,6 +59,7 @@ Essa estrutura permite a fácil comunicação entre serviços e facilita a escal
 - Flyway
 - Maven
 - Eureka
+- OpenFeign - Comunicação síncrona entre serviços
 
 ## 📦 Pré-requisitos
 
