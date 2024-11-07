@@ -73,6 +73,9 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version> <!-- Adicionada variável para gerenciar versão -->
         </dependency>
+
+
+
     </dependencies>
 
     <build>

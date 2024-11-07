@@ -54,7 +54,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - EUREKA_INSTANCE_PREFERIPADDRESS=true
-      - SPRING_APPLICATION_NAME=PAGAMENTOS-MS # Corrigido
+      - SPRING_APPLICATION_NAME=PAGAMENTOS-MS
     networks:
       - pratourbano-network
     depends_on:
@@ -88,9 +88,9 @@ services:
     build:
       context: .
       dockerfile: ./pedidos/Dockerfile
-    #container_name: pedidos-ms
-    #ports:
-      #- "8081:8081"
+    container_name: pedidos-ms
+    ports:
+      - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-pedidos:3306/pedidos_db
