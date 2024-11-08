@@ -2,12 +2,12 @@ POST  http://localhost:8082/pagamentos-ms/pagamentos
 Content-Type: application/json
 
 {
-  "valor": 344,
-  "nome": "Juca Bala",
-  "numero": "898877655",
-  "expiracao": "10/29",
-  "codigo": "300",
-  "pedidoId": 1,
-  "formaDePagamentoId": 1
-
+  "valor": 400,
+  "nome": "Clauionor",
+  "numero": "123456",
+  "expiracao": "10/2028",
+  "codigo": 875,
+  "status": "CONFIRMADO",
+  "formaDePagamentoId": 1,
+  "pedidoId": 2
 }

@@ -1,9 +1,6 @@
 package br.com.pinalli.amqp;
 
-import org.springframework.amqp.core.ExchangeBuilder;
-import org.springframework.amqp.core.FanoutExchange;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,17 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-public class PagamentoAMQPconfig {
-
-    @Bean
-    public RabbitAdmin criaRabbitAdmin(ConnectionFactory conn) {
-        return new RabbitAdmin(conn);
-    }
-
-    @Bean
-    public ApplicationListener<ApplicationReadyEvent> inicializaAdmin(RabbitAdmin rabbitAdmin) {
-        return event -> rabbitAdmin.initialize();
-    }
+public class PedidoAMQPconfig {
 
     @Bean
     public Jackson2JsonMessageConverter messageConverter() {
@@ -40,10 +27,38 @@ public class PagamentoAMQPconfig {
         return rabbitTemplate;
     }
 
+
+    @Bean
+    public Queue filaDetalhesPedido() {
+        return QueueBuilder
+                .nonDurable("pagamentos.detalhes-pedido")
+                .build();
+    }
+
     @Bean
     public FanoutExchange fanoutExchange() {
         return ExchangeBuilder
                 .fanoutExchange("pagamentos.ex")
                 .build();
     }
+
+    @Bean
+    public Binding bindPagamentoPedido(FanoutExchange  fanoutExchange) {
+        return BindingBuilder
+                .bind(filaDetalhesPedido())
+                .to(fanoutExchange);
+    }
+
+    // código omitido
+
+    @Bean
+    public RabbitAdmin criaRabbitAdmin(ConnectionFactory conn) {
+        return new RabbitAdmin(conn);
+    }
+
+    @Bean
+    public ApplicationListener<ApplicationReadyEvent> inicializaAdmin(RabbitAdmin rabbitAdmin) {
+        return event -> rabbitAdmin.initialize();
+    }
 }
+

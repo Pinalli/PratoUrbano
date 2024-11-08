@@ -128,7 +128,10 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - EUREKA_INSTANCE_PREFERIPADDRESS=true
       - RABBITMQ_HOST=rabbitmq
-      - SPRING_APPLICATION_NAME=PEDIDOS-MS
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=rabbitm
+      - SPRING_RABBITMQ_PASSWORD=pratourbano
     networks:
       - pratourbano-network
     depends_on:
@@ -136,6 +139,9 @@ services:
         condition: service_healthy
       mysql-pedidos:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
+
 
   gateway-ms:
     build:
