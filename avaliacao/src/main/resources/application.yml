@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: AVALIACAO-MS
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: rabbitm
+    password: pratourbano
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 5000
+          multiplier: 1
+          max-interval: 300000
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
+    registerWithEureka: true
+    fetchRegistry: true
+  instance:
+    preferIpAddress: true
+    instanceId: ${spring.application.name}:${random.value}
+
+server:
+  port: 8083
