@@ -57,10 +57,6 @@ docker volume prune
 docker system prune -a --volumes
  docker-compose down --volumes --remove-orphans
 
-docker-compose down; docker-compose up --build
-
-
-
 - Verifique se foi usado o volume do Docker:
 docker volume ls
 docker volume rm nome_do_volume

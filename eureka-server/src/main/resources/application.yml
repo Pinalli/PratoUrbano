@@ -10,10 +10,10 @@ spring:
 
 eureka:
   client:
-    registerWithEureka: false   # Desabilita o registro no próprio Eureka
-    fetchRegistry: false        # O Eureka não busca a lista dos serviços (não sincroniza consigo mesmo)
+    registerWithEureka: false
+    fetchRegistry: false
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka-server:8761/eureka/  # Alterado de localhost para eureka-server
   instance:
     preferIpAddress: true
     instanceId: ${spring.application.name}:${random.value}

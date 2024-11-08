@@ -26,7 +26,7 @@ import java.net.URI;
 public class PagamentoController {
 
 
-    private  final RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
     private final PagamentoService pagamentoService;
 
     public PagamentoController(RabbitTemplate rabbitTemplate, PagamentoService pagamentoService) {
@@ -40,7 +40,7 @@ public class PagamentoController {
         URI endereco = uriBuilder.path("/pagamentos/{id}").buildAndExpand(pagamento.getId()).toUri();
 
         //Message message = new Message(("Criei um pagamento com o id  " + pagamento.getId()).getBytes());
-        rabbitTemplate.convertAndSend("pagamentos.ex","" ,pagamento);
+        rabbitTemplate.convertAndSend("pagamentos.ex", "", pagamento);
         return ResponseEntity.created(endereco).body(pagamento);
     }
 
@@ -72,10 +72,11 @@ public class PagamentoController {
 
     @PatchMapping("/{id}/confirmar")
     @CircuitBreaker(name = "atualizaPedido", fallbackMethod = "pagamentoAutorizadoComIntegracaoPendente")
-    public void confirmarPagamento(@PathVariable @NotNull Long id){
+    public void confirmarPagamento(@PathVariable @NotNull Long id) {
         pagamentoService.confirmarPagamento(id);
     }
-    public void pagamentoAutorizadoComIntegracaoPendente(Long id, Exception e){
+
+    public void pagamentoAutorizadoComIntegracaoPendente(Long id, Exception e) {
         pagamentoService.alteraStatus(id);
     }
 }

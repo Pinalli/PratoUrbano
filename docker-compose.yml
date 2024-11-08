@@ -2,26 +2,6 @@
 
 services:
 
-  rabbitmq:
-    image: rabbitmq:3.10-management
-    container_name: rabbitmq
-    restart: always
-    ports:
-      - 5672:5672
-      - 15672:15672
-    volumes:
-      - ./dados:/var/lib/rabbitmq/
-    environment:
-      - RABBITMQ_DEFAULT_USER=rabbitm
-      - RABBITMQ_DEFAULT_PASS=pratourbano
-    healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 30s
-      retries: 3
-      start_period: 10s
-      timeout: 10s
-    networks:
-      - pratourbano-network
 
   eureka-server:
     build:
@@ -39,7 +19,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 10s
 
   mysql-pagamentos:
     image: mysql:8.0
@@ -60,7 +40,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 50s
 
   pagamentos-ms:
     build:
@@ -91,6 +71,12 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_started  # Condição para aguardar o RabbitMQ
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      retries: 3
+      start_period: 50s
+      timeout: 5s
 
   mysql-pedidos:
     image: mysql:8.0
@@ -135,12 +121,18 @@ services:
     networks:
       - pratourbano-network
     depends_on:
-      eureka-server:
-        condition: service_healthy
-      mysql-pedidos:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_started
+        eureka-server:
+          condition: service_healthy
+        mysql-pedidos:
+          condition: service_healthy
+        rabbitmq:
+          condition: service_started
+    healthcheck:
+        test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
+        interval: 10s
+        retries: 3
+        start_period: 30s
+        timeout: 5s
 
 
   gateway-ms:
@@ -160,6 +152,62 @@ services:
     depends_on:
       eureka-server:
         condition: service_healthy
+
+  avaliacao-ms:
+    build:
+      context: .
+      dockerfile: ./avaliacao/Dockerfile  # Certifique-se de que o Dockerfile esteja no local correto
+    container_name: avaliacao-ms
+    ports:
+      - "8083:8083"  # Porta exposta, ajuste conforme necessário
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_INSTANCE_PREFERIPADDRESS=true
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=rabbitm
+      - SPRING_RABBITMQ_PASSWORD=pratourbano
+      - SPRING_APPLICATION_NAME=AVALIACAO-MS
+    networks:
+      - pratourbano-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      pagamentos-ms:
+        condition: service_healthy
+      pedidos-ms:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8083/actuator/health" ]
+      interval: 10s
+      retries: 3
+      start_period: 30s
+      timeout: 5s
+
+
+  rabbitmq:
+    image: rabbitmq:3.10-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./dados:/var/lib/rabbitmq/
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitm
+      - RABBITMQ_DEFAULT_PASS=pratourbano
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+    networks:
+      - pratourbano-network
 
 networks:
   pratourbano-network:
