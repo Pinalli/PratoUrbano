@@ -187,7 +187,7 @@ services:
       timeout: 5s
 
   rabbitmq1:
-    image: rabbitmq:3.10-management
+    image: rabbitmq:3.12-management
     hostname: rabbitmq1
     container_name: rabbitmq1
     restart: always
@@ -206,11 +206,11 @@ services:
       test: [ "CMD", "rabbitmqctl", "status" ]
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 10s
+      retries: 5
+      start_period: 60s
 
   rabbitmq2:
-      image: rabbitmq:3.10-management
+      image: rabbitmq:3.12-management
       hostname: rabbitmq2
       container_name: rabbitmq2
       restart: always
@@ -218,7 +218,7 @@ services:
         - rabbitmq1
       environment:
         - RABBITMQ_ERLANG_COOKIE=PRATOURBANOCOOKIE
-        - RABBITMQ_DEFAULT_USER=rabbitm
+        - RABBITMQ_DEFAULT_USER=mqrabbitm
         - RABBITMQ_DEFAULT_PASS=pratourbano
       ports:
         - "5673:5672"
@@ -235,9 +235,15 @@ services:
                 tail -f /dev/null"
       networks:
         - pratourbano-network
+      healthcheck:
+        test: [ "CMD", "rabbitmqctl", "status" ]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+        start_period: 60s
 
   rabbitmq3:
-      image: rabbitmq:3.10-management
+      image: rabbitmq:3.12-management
       hostname: rabbitmq3
       container_name: rabbitmq3
       restart: always
@@ -262,6 +268,13 @@ services:
                 tail -f /dev/null"
       networks:
         - pratourbano-network
+      healthcheck:
+        test: [ "CMD", "rabbitmqctl", "status" ]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+        start_period: 60s
+
 
 networks:
   pratourbano-network:
