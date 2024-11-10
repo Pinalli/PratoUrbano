@@ -131,7 +131,7 @@ services:
         test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
         interval: 10s
         retries: 3
-        start_period: 30s
+        start_period: 40s
         timeout: 5s
 
 
