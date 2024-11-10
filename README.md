@@ -164,7 +164,12 @@ Este comando irá:
 
 ## 🗄️ Estrutura do Projeto
   ```
-PratoUrbano/<br>
+PratoUrbano/
+│
+├── avaliacao/
+│   ├── src/
+│   ├── Dockerfile
+│   └── pom.xml
 │
 ├── eureka-server/
 │   ├── src/
