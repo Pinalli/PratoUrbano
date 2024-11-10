@@ -2,18 +2,21 @@ spring:
   application:
     name: AVALIACAO-MS
   rabbitmq:
-    host: rabbitmq
-    port: 5672
+    addresses: rabbitmq1:5672,rabbitmq2:5672,rabbitmq3:5672
     username: rabbitm
     password: pratourbano
     listener:
       simple:
         retry:
           enabled: true
+          initial-interval: 1000
           max-attempts: 3
-          initial-interval: 5000
-          multiplier: 1
-          max-interval: 300000
+          max-interval: 10000
+          multiplier: 2.0
+    connection-timeout: 5000
+    publisher-confirm-type: correlated
+    publisher-returns: true
+
 
 eureka:
   client:
