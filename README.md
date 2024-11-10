@@ -5,49 +5,56 @@ PratoUrbano é um sistema baseado em arquitetura de microsserviços, desenvolvid
 
 ## 🏗️ Arquitetura
 
-# Projeto PratoUrbano
+### Projeto PratoUrbano
 
 O projeto **PratoUrbano** é composto pelos seguintes componentes:
 
-## 1. **Eureka Server**
+### 1. **Eureka Server**
    - **Descrição**: Serviço de descoberta que registra e monitora os microsserviços, permitindo comunicação entre eles.
    - **Detalhes**:
      - Todos os serviços, incluindo o Gateway, os serviços de Pedidos e Pagamentos, estão registrados no Eureka Server.
      - Facilita a escalabilidade e o balanceamento de carga entre as instâncias dos microsserviços.
 
-## 2. **API Gateway**
+### 2. **API Gateway**
    - **Função**: Gerencia o roteamento das requisições para os serviços internos.
    - **Detalhes**:
      - Registrado no Eureka Server, onde é possível localizá-lo e mantê-lo monitorado.
      - Containerizado com Docker para garantir portabilidade e fácil implantação.
 
-## 3. **Serviço de Pedidos**
+### 3. **Serviço de Pedidos**
    - **Função**: Gerencia o ciclo de vida dos pedidos, incluindo criação, atualização e consulta de pedidos.
    - **Detalhes**:
      - Utiliza uma instância de banco de dados MySQL própria para armazenamento de dados de pedidos.
      - Controle de migrações de banco de dados feito com Flyway, garantindo consistência e versionamento dos dados.
      - Registrado no Eureka Server, tornando-o localizável e monitorado junto aos demais serviços.
 
-## 4. **Serviço de Pagamentos**
+### 4. **Serviço de Pagamentos**
    - **Função**: Processa os pagamentos associados aos pedidos no sistema.
    - **Detalhes**:
      - Banco de dados MySQL próprio para manter os dados de pagamento independentes.
      - Controle de migrações de banco de dados feito com Flyway para assegurar a consistência dos dados e versionamento.
      - Registrado no Eureka Server, o que facilita sua descoberta e monitoramento.
 
-## 5. **RabbitMQ - Comunicação Assíncrona**
+### 5. **RabbitMQ - Comunicação Assíncrona**
    - **Função**: Facilita a comunicação assíncrona entre os microsserviços, permitindo um fluxo mais eficiente de mensagens.
    - **Detalhes**:
      - O RabbitMQ foi integrado ao sistema para que os serviços de **Pedidos** e **Pagamentos** possam trocar mensagens de forma desacoplada e eficiente.
      - O RabbitMQ é executado como um serviço Docker separado e todos os microsserviços (Gateway, Pedidos e Pagamentos) são configurados para se comunicar com ele.
      - A configuração do RabbitMQ inclui a autenticação com usuário `rabbitm` e senha `pratourbano`, para garantir a segurança na troca de mensagens.
 
-### Como o RabbitMQ é Utilizado:
-- **Serviço de Pedidos**: Envia notificações e informações sobre novos pedidos para o RabbitMQ, para que o **Serviço de Pagamentos** possa processá-los.
-- **Serviço de Pagamentos**: Recebe mensagens do RabbitMQ relacionadas a novos pedidos e processa os pagamentos de forma assíncrona.
-- **API Gateway**: Interage com os serviços que utilizam o RabbitMQ, permitindo que as requisições e respostas sejam processadas de forma eficiente.
+#### **Configuração do Cluster RabbitMQ para Alta Disponibilidade**
+- **Objetivo**: Implementar um cluster RabbitMQ com três nós para garantir alta disponibilidade e resiliência na comunicação entre os microserviços.
+- **Benefícios**:
+  - **Alta Disponibilidade**: O cluster garante que, mesmo que um dos nós falhe, a comunicação entre os serviços continuará funcionando sem interrupções, garantindo que o sistema permaneça disponível e resiliente.
+  - **Resiliência**: Configurações de retry e resiliência são aplicadas nos microserviços, permitindo que eles se recuperem automaticamente em caso de falhas na comunicação.
+  - **Monitoramento**: Foi implementado um healthcheck para monitoramento do status do cluster RabbitMQ, garantindo a visibilidade sobre a saúde da comunicação assíncrona.
+  - **Distribuição de Carga**: Com o cluster RabbitMQ, as mensagens podem ser distribuídas de forma eficiente entre os nós, melhorando a escalabilidade e desempenho.
 
-## 6. **Comunicação entre Serviços**
+- **Configurações do Cluster**:
+  - **Nó Primário**: Porta 5672 (AMQP) / 15672 (Management)
+  - **Nós Secundários**: Portas 5673, 5674 (AMQP) / 15673, 15674 (Management)
+
+### 6. **Comunicação entre Serviços**
    - **Tecnologia**: OpenFeign com Resilience4j
    - **Detalhes**:
      - Implementação de clients declarativos para chamadas REST entre serviços.
@@ -57,7 +64,7 @@ O projeto **PratoUrbano** é composto pelos seguintes componentes:
      - Fallback automático em caso de falhas.
      - Integração entre os serviços de Pedidos e Pagamentos.
 
-### Circuit Breaker
+#### Circuit Breaker
 O sistema utiliza Resilience4j como implementação de Circuit Breaker para garantir resiliência na comunicação entre serviços:
 
 - **Configuração**:
@@ -77,6 +84,7 @@ O sistema utiliza Resilience4j como implementação de Circuit Breaker para gara
 ## 🔍 Monitoramento
 
 Você pode monitorar o estado do Circuit Breaker através do endpoint:
+
   ```
 http://localhost:8080/actuator/circuitbreakers
   ```
@@ -156,7 +164,12 @@ Este comando irá:
 
 ## 🗄️ Estrutura do Projeto
   ```
-PratoUrbano/<br>
+PratoUrbano/
+│
+├── avaliacao/
+│   ├── src/
+│   ├── Dockerfile
+│   └── pom.xml
 │
 ├── eureka-server/
 │   ├── src/
